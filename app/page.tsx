@@ -99,7 +99,7 @@ export default function Home() {
                 alt={file.name}
                 className="object-cover w-full h-full"
               />
-              <div className="text-white">{file.name}</div>
+              <div className="text-white">{file.name} {(fileSize(file.size))}</div>
             </div>
             <div className="flex items-center justify-center text-white">Output image here</div>
           </>
