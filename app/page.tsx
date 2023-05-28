@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 
+import { FaTrashAlt } from "react-icons/fa";
+
 export default function Home() {
 
   const [file, setFile] = useState<File | null>();
@@ -34,6 +36,9 @@ export default function Home() {
     return parseFloat((size / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
+  const handleDelete = () => {
+    setFile(null);
+  };
 
   return (
     <div className="max-w-3xl mx-auto my-10 px-4">
@@ -92,14 +97,22 @@ export default function Home() {
       <section className="grid grid-cols-2 gap-4 mt-4">
         {file && (
           <>
-            <div>
+            <div className="relative">
               <img
                 src={URL.createObjectURL(file)}
                 // method from react-dropzone (https://react-dropzone.js.org/)
                 alt={file.name}
                 className="object-cover w-full h-full"
               />
-              <div className="text-white">{file.name} {(fileSize(file.size))}</div>
+              <button
+                className="absolute top-0 right-0 p-2 text-black bg-yellow-500"
+                onClick={() => handleDelete()}
+              >
+                <FaTrashAlt className="w-4 h-4 hover:scale-125 duration-300" />
+              </button>
+              <div className="absolute bottom-0 left-0 right-0 bg-gray-900 bg-opacity-50 text-white text-md p-2">
+                {file.name} ({fileSize(file.size)})
+              </div>
             </div>
             <div className="flex items-center justify-center text-white">Output image here</div>
           </>
