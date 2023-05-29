@@ -2,7 +2,12 @@
 import { useState } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt, FaDownload } from "react-icons/fa";
+
+import { ThreeDots } from "react-loader-spinner";
+
+import { saveAs } from "file-saver";
+// save file option
 
 export default function Home() {
 
@@ -10,6 +15,8 @@ export default function Home() {
   const [error, setError] = useState("");
   const [outputImage, setOutputImage] = useState<string | null>(null);
   const [base64image, setBase64Image] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
 
   const acceptedFileTypes = {
     "image/jpeg": [".jpeg", ".png"],
@@ -54,6 +61,7 @@ export default function Home() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const response = await fetch("/api/replicate", {
       method: "POST",
       headers: {
@@ -67,10 +75,16 @@ export default function Home() {
 
     if (result.error) {
       setError(result.error);
+      setLoading(false);
       return;
     }
 
     setOutputImage(result.output);
+    setLoading(false);
+  };
+
+  const handleDownload = () => {
+    saveAs(outputImage as string, "output.png");
   };
 
   return (
@@ -140,7 +154,7 @@ export default function Home() {
                 className="object-cover w-full h-full"
               />
               <button
-                className="absolute top-0 right-0 p-2 text-black bg-red-500"
+                className="absolute top-0 right-0 p-3 text-black bg-red-500"
                 onClick={() => handleDelete()}
               >
                 <FaTrashAlt className="w-4 h-4 hover:scale-125 duration-300" />
@@ -149,13 +163,34 @@ export default function Home() {
                 {file.name} ({fileSize(file.size)})
               </div>
             </div>
-            <div className="flex items-center justify-center text-white">
+            <div className="flex items-center justify-center text-white relative">
+
+              {
+                loading && (
+                  <ThreeDots
+                    height="60"
+                    width="60"
+                    color="#eeeeee"
+                    ariaLabel="three-dots-loading"
+                    visible={true}
+                  />
+                )}
+
               {outputImage && (
-                <img
-                  src={outputImage}
-                  alt="output"
-                  className="object-cover w-full h-full"
-                />
+                <>
+                  <img
+                    src={outputImage}
+                    alt="output"
+                    className="object-cover w-full h-full"
+                  />
+
+                  <button
+                    className="absolute top-0 right-0 p-3 text-black bg-green-500"
+                    onClick={() => handleDownload()}
+                  >
+                    <FaDownload className="w-4 h-4 hover:scale-125 duration-300" />
+                  </button>
+                </>
               )}
             </div>
           </>
