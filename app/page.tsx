@@ -9,6 +9,7 @@ export default function Home() {
   const [file, setFile] = useState<File | null>();
   const [error, setError] = useState("");
   const [outputImage, setOutputImage] = useState<string | null>(null);
+  const [base64image, setBase64Image] = useState<string | null>(null);
 
   const acceptedFileTypes = {
     "image/jpeg": [".jpeg", ".png"],
@@ -29,6 +30,14 @@ export default function Home() {
     console.log(acceptedFiles);
     setError("");
     setFile(acceptedFiles[0]);
+
+    // convert image file to base64
+    const reader = new FileReader();
+    reader.readAsDataURL(acceptedFiles[0]);
+    reader.onload = () => {
+      const binaryStr = reader.result as string;
+      setBase64Image(binaryStr);
+    };
   };
 
   const fileSize = (size: number) => {
