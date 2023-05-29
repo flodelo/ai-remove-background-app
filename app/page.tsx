@@ -8,6 +8,7 @@ export default function Home() {
 
   const [file, setFile] = useState<File | null>();
   const [error, setError] = useState("");
+  const [outputImage, setOutputImage] = useState<string | null>(null);
 
   const acceptedFileTypes = {
     "image/jpeg": [".jpeg", ".png"],
@@ -38,6 +39,15 @@ export default function Home() {
 
   const handleDelete = () => {
     setFile(null);
+    setOutputImage(null);
+  };
+
+  const handleSubmit = async () => {
+    // Result from the image processing (output)
+
+    // test with via.placeholder.com
+
+    setOutputImage("https://via.placeholder.com/150");
   };
 
   return (
@@ -84,7 +94,9 @@ export default function Home() {
         {
           file && (
             <div className="flex items-center justify-center mt-2">
-              <button className="text-white text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg px-4 py-2 text-center mb-2">
+              <button
+                onClick={handleSubmit}
+                className="text-white text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg px-4 py-2 text-center mb-2">
                 Remove background
               </button>
             </div>)}
@@ -114,7 +126,15 @@ export default function Home() {
                 {file.name} ({fileSize(file.size)})
               </div>
             </div>
-            <div className="flex items-center justify-center text-white">Output image here</div>
+            <div className="flex items-center justify-center text-white">
+              {outputImage && (
+                <img
+                  src={outputImage}
+                  alt="output"
+                  className="object-cover w-full h-full"
+                />
+              )}
+            </div>
           </>
         )}
       </section>;
