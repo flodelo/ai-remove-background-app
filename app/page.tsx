@@ -54,11 +54,23 @@ export default function Home() {
   };
 
   const handleSubmit = async () => {
-    // Result from the image processing (output)
+    const response = await fetch("/api/replicate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ image: base64image }),
+    });
 
-    // test with via.placeholder.com
+    let result = await response.json();
+    console.log(result);
 
-    setOutputImage("https://via.placeholder.com/150");
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    setOutputImage(result.output);
   };
 
   return (
@@ -86,7 +98,7 @@ export default function Home() {
               <section>
                 <div className="p-10" {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <p>Drag 'n' drop some files here, or click to select files</p>
+                  <p>Drag & drop some files here, or click to select files</p>
                 </div>
               </section>
             )}
@@ -128,7 +140,7 @@ export default function Home() {
                 className="object-cover w-full h-full"
               />
               <button
-                className="absolute top-0 right-0 p-2 text-black bg-yellow-500"
+                className="absolute top-0 right-0 p-2 text-black bg-red-500"
                 onClick={() => handleDelete()}
               >
                 <FaTrashAlt className="w-4 h-4 hover:scale-125 duration-300" />
