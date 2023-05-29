@@ -24,6 +24,8 @@ export default function Home() {
       return;
     }
 
+    handleDelete();
+
     console.log(acceptedFiles);
     setError("");
     setFile(acceptedFiles[0]);
